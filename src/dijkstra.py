@@ -5,55 +5,53 @@ num_node = 2
 
 """ test bed """
 num_nodes = 6
-# cost = [[-1 for _ in range(num_nodes + 1)] for _ in range(num_nodes + 1)]
-# cost[1][2] = cost[2][1] = 4       # A - B
-# cost[1][3] = cost[3][1] = 5       # A - C
-# cost[2][3] = cost[3][2] = 11      # B - C
-# cost[2][4] = cost[4][2] = 9       # B - D
-# cost[3][5] = cost[5][3] = 3       # C - E
-# cost[4][5] = cost[5][4] = 13      # D - E
-# cost[4][6] = cost[6][4] = 2       # D - F
-# cost[5][6] = cost[6][5] = 6       # E - F
-# cost[2][5] = cost[5][2] = 7       # B - E
 
-def dijkstra(cost ):
-    visited = []
-    node = {"node": 1 , "prev" : -1 , "cost": 0 }
-    current_node = 0
+def dijkstra(cost, start=1):
+    visited = set()
+    node = {"node": start, "prev": -1, "cost": 0}
     heap = deque([node])
     store = deque()
-    while len(heap) != 0 :
-        print("heap : " , heap)
-        min_cost = 100000
+
+    while len(heap) > 0:
+        # pick min-cost node
+        # print("heap : " ,  heap)
+        min_cost = min(item["cost"] for item in heap)
         for item in list(heap):
-            min_cost = min(min_cost , item["cost"])
-        for item in list(heap):
-            if item["cost"] == min_cost :
+            if item["cost"] == min_cost:
                 current_node = item
                 heap.remove(item)
-                visited.append(current_node["node"])
-                store.append(current_node)
-            for j in range(len(cost[current_node["node"]])) :
-                if j not in visited and cost[current_node["node"]][j] != -1:
-                    new_node = {"node": j , "prev" : current_node["node"] , "cost" : current_node["cost"] + cost[current_node["node"]][j]}
-                    exist = False
-                    if len(heap) > 0 :
-                        for item in heap :
-                            if item["node"] == new_node["node"] :
-                                exist = True
-                                if item["cost"] > new_node["cost"]  :
-                                    print("new node " , new_node)
-                                    item["prev"] = new_node["prev"]
-                                    item["cost"] = new_node["cost"]
-                    if exist == False:
-                        heap.append(new_node)
+                break
 
-    return store
+        # mark visited
+        visited.add(current_node["node"])
+        store.append(current_node)
 
+        # relax neighbors
+        for j, edge_cost in enumerate(cost[current_node["node"]]):
+            if edge_cost != -1 and j not in visited:
+                new_node = {
+                    "node": j,
+                    "prev": current_node["node"],
+                    "cost": current_node["cost"] + edge_cost
+                }
+
+                exist = False
+                for item in heap:
+                    if item["node"] == new_node["node"]:
+                        exist = True
+                        if item["cost"] > new_node["cost"]:
+                            item["cost"] = new_node["cost"]
+                            item["prev"] = new_node["prev"]
+                if not exist:
+                    heap.append(new_node)
+
+    return list(store)
+
+# print(dijkstra(cost))
 
 if __name__ == "__main__" :
     trace_back = dijkstra(cost)
-    end_node = 8
+    end_node = num_points * 2
     start_node = 1
     curr_node = end_node
     lst_nodes = []
@@ -73,7 +71,7 @@ if __name__ == "__main__" :
     lst_nodes.reverse()
     for node in lst_nodes :
         print(node , " -> " , end = "")
-    print("Result : " , res_cost)
+    print("Result : " , res_cost + layer_times_2[1])
 
     cut_point = -1
     for i in range(len(lst_nodes)):
@@ -83,5 +81,6 @@ if __name__ == "__main__" :
 
 
     print("\n=> Layer 1 : " , lst_nodes[:cut_point])
-    print("=> Layer 2 : " , lst_nodes[cut_point :])
+    lst_nodes = [x - num_points for x in lst_nodes]
+    print("=> Layer 2 : " , lst_nodes[cut_point :] )
         
