@@ -1,19 +1,20 @@
 from handle_data import comm_times , layer_times_2 , layer_times_3
 from collections import deque
+from handle_data import cost , num_points
 num_node = 2
 
 """ test bed """
 num_nodes = 6
-cost = [[-1 for _ in range(num_nodes + 1)] for _ in range(num_nodes + 1)]
-cost[1][2] = cost[2][1] = 4       # A - B
-cost[1][3] = cost[3][1] = 5       # A - C
-cost[2][3] = cost[3][2] = 11      # B - C
-cost[2][4] = cost[4][2] = 9       # B - D
-cost[3][5] = cost[5][3] = 3       # C - E
-cost[4][5] = cost[5][4] = 13      # D - E
-cost[4][6] = cost[6][4] = 2       # D - F
-cost[5][6] = cost[6][5] = 6       # E - F
-cost[2][5] = cost[5][2] = 7       # B - E
+# cost = [[-1 for _ in range(num_nodes + 1)] for _ in range(num_nodes + 1)]
+# cost[1][2] = cost[2][1] = 4       # A - B
+# cost[1][3] = cost[3][1] = 5       # A - C
+# cost[2][3] = cost[3][2] = 11      # B - C
+# cost[2][4] = cost[4][2] = 9       # B - D
+# cost[3][5] = cost[5][3] = 3       # C - E
+# cost[4][5] = cost[5][4] = 13      # D - E
+# cost[4][6] = cost[6][4] = 2       # D - F
+# cost[5][6] = cost[6][5] = 6       # E - F
+# cost[2][5] = cost[5][2] = 7       # B - E
 
 def dijkstra(cost ):
     visited = []
@@ -52,9 +53,9 @@ def dijkstra(cost ):
 
 if __name__ == "__main__" :
     trace_back = dijkstra(cost)
-    end_node = 6
-    start_node = 1 
-    curr_node = end_node 
+    end_node = 8
+    start_node = 1
+    curr_node = end_node
     lst_nodes = []
     res_cost = 0
     for item in trace_back :
@@ -69,8 +70,18 @@ if __name__ == "__main__" :
                 curr_node = item["prev"]
                 break
 
-    print(res_cost)
     lst_nodes.reverse()
     for node in lst_nodes :
         print(node , " -> " , end = "")
+    print("Result : " , res_cost)
+
+    cut_point = -1
+    for i in range(len(lst_nodes)):
+        if lst_nodes[i] > num_points:
+            cut_point = i
+            break
+
+
+    print("\n=> Layer 1 : " , lst_nodes[:cut_point])
+    print("=> Layer 2 : " , lst_nodes[cut_point :])
         
