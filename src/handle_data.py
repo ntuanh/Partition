@@ -30,5 +30,13 @@ for i in range(1 , capacity - 1):
  cost[i + num_points][i + num_points + 1] = layer_times_3[i+1]
  cost[i][i + num_points + 1] = comm_times[i]
 
+
+print("communication times : ")
+print(comm_times)
+print("layers at machine 2 times : ")
+print(layer_times_2)
+print("layers at machine 3 times : ")
+print(layer_times_3)
+print("After handling")
 for row in cost:
  print(row)
