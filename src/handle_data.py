@@ -1,6 +1,4 @@
-
-chubby_size = 1000000
-
+chubby_size = 10000000
 
 comm_times = [chubby_size, 484.752, 94.563, 41.322, 51.551, 28.33, 24.968, 16.532,
  20.588, 17.426, 52.015, 67.003, 24.234, 100.574, chubby_size,
@@ -22,23 +20,18 @@ comm_times.insert(0 , -1)
 
 num_points = len(layer_times_2) - 1
 capacity = len(layer_times_2)
-cost = [[-1 for _ in range((capacity)*2)] for _ in range((capacity)*2)]
-
-for i in range(1 , capacity - 1):
- cost[i][i+1] = layer_times_2[i+1]
- cost[i + num_points][i + num_points + 1] = layer_times_3[i+1]
- cost[i][i + num_points + 1] = comm_times[i] + layer_times_3[i+1]
-
 
 print("[Num points] " , num_points)
 
-if __name__ == "__main__" :
- print("communication times : ")
- print(comm_times)
- print("layers at machine 2 times : ")
- print(layer_times_2)
- print("layers at machine 3 times : ")
- print(layer_times_3)
- print("After handling")
- for row in cost:
-  print(row)
+class Data:
+ def __init__(self):
+  pass
+
+ def get_test_bed_cost(self):
+  cost = [[-1 for _ in range((capacity) * 2)] for _ in range((capacity) * 2)]
+  for i in range(1, capacity - 1):
+   cost[i][i + 1] = layer_times_2[i + 1]
+   cost[i + num_points][i + num_points + 1] = layer_times_3[i + 1]
+   cost[i][i + num_points + 1] = comm_times[i] + layer_times_3[i + 1]
+
+  return cost
